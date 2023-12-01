@@ -8,6 +8,10 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class Day1 {
+
+    static String[] dictionary =
+            {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero"};
+
     public static void main(String[] args) {
         ArrayList<String> inputList = new ArrayList<>();
 
@@ -23,10 +27,10 @@ public class Day1 {
         } // end try
 
         System.out.println("Task 1: " + task1(inputList));
+        System.out.println("Task 2: " + task2(inputList));
     }
 
     public static int task1(ArrayList<String> input) {
-//        Pattern pattern = Pattern.compile("[A-Za-z]"); // any non-digit character
         Pattern pattern = Pattern.compile("^\\D*(\\d)(\\D*(\\d)\\D*)*"); // any non-digit character
         int solution = 0;
         int index = 0;
@@ -43,14 +47,44 @@ public class Day1 {
 
                 index++;
 
-                System.out.print(index + ":  ");
-                System.out.println(" final value: " + finalVal);
-
                 solution += finalVal;
 
             } catch(IllegalStateException ignored) {
             }
         }
         return solution;
+    }
+
+    public static int task2(ArrayList<String> input) {
+        int sum = 0;
+        Pattern pattern = Pattern.compile("^\\D*(\\d)(\\D*(\\d)\\D*)*");
+
+        for(String line : input) {
+            int index = 1;
+            String output = line;
+            for (String key : dictionary) {
+                output = output.replaceAll(key, String.valueOf(index));
+                index++;
+
+
+                Matcher matcher = pattern.matcher(line);
+                try {
+                    matcher.find();
+
+                    int firstDig = Integer.parseInt(matcher.group(1));
+                    int secondDig = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : firstDig;
+
+                    int finalVal = (firstDig * 10) + secondDig;
+
+                    index++;
+
+                    sum += finalVal;
+
+                } catch (IllegalStateException ignored) {
+                }
+            }
+        }
+
+        return sum;
     }
 }
