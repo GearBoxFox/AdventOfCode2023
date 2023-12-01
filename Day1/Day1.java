@@ -22,33 +22,34 @@ public class Day1 {
             e.printStackTrace();
         } // end try
 
-        System.out.println(day1(inputList));
+        System.out.println("Task 1: " + task1(inputList));
     }
 
-    public static int day1(ArrayList<String> input) {
-        Pattern pattern = Pattern.compile("\\D"); // any non-digit character
+    public static int task1(ArrayList<String> input) {
+//        Pattern pattern = Pattern.compile("[A-Za-z]"); // any non-digit character
+        Pattern pattern = Pattern.compile("^\\D*(\\d)(\\D*(\\d)\\D*)*"); // any non-digit character
         int solution = 0;
         int index = 0;
 
         for(String line : input) {
             Matcher matcher = pattern.matcher(line);
-            String output = matcher.replaceAll(""); // strip non-digit characters
+            try {
+                matcher.find();
 
-//            if (output.isEmpty()) {
-//                continue;
-//            }
+                int firstDig = Integer.parseInt(matcher.group(1));
+                int secondDig = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : firstDig;
 
-            int firstDig = Character.getNumericValue(output.charAt(0));
-            int secondDig = Character.getNumericValue(output.charAt(output.length() - 1));
+                int finalVal = (firstDig * 10) + secondDig;
 
-            int finalVal = (firstDig * 10) + secondDig;
+                index++;
 
-            index++;
+                System.out.print(index + ":  ");
+                System.out.println(" final value: " + finalVal);
 
-            System.out.print(index + ":  ");
-            System.out.println(finalVal);
+                solution += finalVal;
 
-            solution += finalVal;
+            } catch(IllegalStateException ignored) {
+            }
         }
         return solution;
     }
