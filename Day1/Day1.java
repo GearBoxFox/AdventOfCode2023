@@ -4,6 +4,7 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -60,21 +61,9 @@ public class Day1 {
         Pattern pattern = Pattern.compile("^\\D*(\\d)(\\D*(\\d)\\D*)*");
 
         for(String line : input) {
-            String firstMatch = "";
-            int firstIndex = Integer.MAX_VALUE;
-
-            int index = 1;
-            String output = line.toLowerCase(Locale.ROOT);
 
             // funky precheck for edge cases
-            output = precheck(output);
-
-            // replace text with ints
-//            for (String key : dictionary) {
-//                output.replaceAll(key, String.valueOf(index));
-//                index++;
-//            }
-            // end text to int
+            String output = precheck(line);
 
 //            System.out.println(output);
 
@@ -87,6 +76,7 @@ public class Day1 {
                 int secondDig = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : firstDig;
 
                 int finalVal = (firstDig * 10) + secondDig;
+//                System.out.println(finalVal);
 
                 sum += finalVal;
 
@@ -119,4 +109,5 @@ public class Day1 {
         }
         return in;
     }
+
 }
