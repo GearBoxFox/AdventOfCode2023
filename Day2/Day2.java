@@ -47,7 +47,6 @@ public class Day2 {
                             int x = count.get(draw[1]);
                             if (x < Integer.parseInt(draw[0])) {
                                 works.set(false);}
-//                            System.out.println(Arrays.toString(draw));
 ;                        });
                             }
                     );
@@ -56,5 +55,11 @@ public class Day2 {
         ).flatMapToInt((line) -> IntStream.of(
                 Integer.parseInt(line.split(":")[0].replaceAll("\\D", ""))))
                 .sum();
+    }
+
+    public static int task2(ArrayList<String> input) {
+
+
+        return 0;
     }
 }
