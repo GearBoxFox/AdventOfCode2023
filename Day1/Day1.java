@@ -1,16 +1,20 @@
 package Day1;
 
+import javafx.util.Pair;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class Day1 {
 
-    static String[] dictionary =
-            {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero"};
+    static ArrayList<String> dictionary = new ArrayList<>(
+            Arrays.asList("one", "two", "three", "four", "five", "six", "seven", "eight", "nine"));
+    static String startChars =
+            "otfsen";
 
     public static void main(String[] args) {
         ArrayList<String> inputList = new ArrayList<>();
@@ -33,7 +37,6 @@ public class Day1 {
     public static int task1(ArrayList<String> input) {
         Pattern pattern = Pattern.compile("^\\D*(\\d)(\\D*(\\d)\\D*)*"); // any non-digit character
         int solution = 0;
-        int index = 0;
 
         for(String line : input) {
             Matcher matcher = pattern.matcher(line);
@@ -44,8 +47,6 @@ public class Day1 {
                 int secondDig = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : firstDig;
 
                 int finalVal = (firstDig * 10) + secondDig;
-
-                index++;
 
                 solution += finalVal;
 
@@ -60,31 +61,53 @@ public class Day1 {
         Pattern pattern = Pattern.compile("^\\D*(\\d)(\\D*(\\d)\\D*)*");
 
         for(String line : input) {
-            int index = 1;
-            String output = line;
-            for (String key : dictionary) {
-                output = output.replaceAll(key, String.valueOf(index));
-                index++;
 
+            // funky precheck for edge cases
+            String output = precheck(line);
 
-                Matcher matcher = pattern.matcher(line);
-                try {
-                    matcher.find();
+//            System.out.println(output);
 
-                    int firstDig = Integer.parseInt(matcher.group(1));
-                    int secondDig = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : firstDig;
+            // get first and last int
+            Matcher matcher = pattern.matcher(output);
+            try {
+                matcher.find();
 
-                    int finalVal = (firstDig * 10) + secondDig;
+                int firstDig = Integer.parseInt(matcher.group(1));
+                int secondDig = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : firstDig;
 
-                    index++;
+                int finalVal = (firstDig * 10) + secondDig;
+//                System.out.println(finalVal);
 
-                    sum += finalVal;
+                sum += finalVal;
 
-                } catch (IllegalStateException ignored) {
-                }
+            } catch (IllegalStateException ignored) {
             }
         }
 
         return sum;
     }
+
+    static String precheck(String in) {
+        String buff = "";
+        for (char c : in.toCharArray()) {
+            if (startChars.indexOf(c) != -1 || !buff.isEmpty()) {
+                buff = buff.concat(String.valueOf(c));
+            }
+
+            if (dictionary.contains(buff)) {
+                in = in.replaceAll(buff, String.valueOf(dictionary.indexOf(buff) + 1));
+                buff = "";
+                continue;
+            }
+
+            boolean hasWord = false;
+            for (String word : dictionary) {
+                if (word.contains(buff)) {hasWord = true; break;}
+            }
+
+            if (!hasWord) buff = String.valueOf(buff.charAt(buff.length() - 1));
+        }
+        return in;
+    }
+
 }
