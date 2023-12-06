@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class Day2 {
@@ -25,7 +26,7 @@ public class Day2 {
             e.printStackTrace();
         } // end try
 
-        System.out.println(task1(inputList));
+        System.out.println(task2(inputList));
 
     }
 
@@ -58,8 +59,43 @@ public class Day2 {
     }
 
     public static int task2(ArrayList<String> input) {
+        AtomicInteger sum = new AtomicInteger();
 
+        input.forEach(
+                        (line) -> {
+                            AtomicInteger r = new AtomicInteger();
+                            AtomicInteger g = new AtomicInteger();
+                            AtomicInteger b = new AtomicInteger();
+                            String[] start = line.split(":");
+                            String[] games = start[1].split(";");
 
-        return 0;
+                            Arrays.stream(games).forEach( (game) -> {
+                                        Arrays.stream(game.split(",")).forEach( (cube) -> {
+                                            String[] draw = cube.trim().split(" ");
+
+                                            switch(draw[1]) {
+                                                case "green":
+                                                    g.set(Math.max(Integer.parseInt(draw[0]), g.get()));
+                                                    break;
+                                                case "blue":
+                                                    b.set(Math.max(Integer.parseInt(draw[0]), b.get()));
+                                                    break;
+                                                case "red":
+                                                    r.set(Math.max(Integer.parseInt(draw[0]), r.get()));
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+
+                                        });
+                                    }
+                            );
+
+//                        System.out.println(r.get() * g.get() * b.get());
+                        sum.addAndGet(r.get() * b.get() * g.get());
+                        }
+                );
+
+        return sum.get();
     }
 }
