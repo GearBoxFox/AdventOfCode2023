@@ -49,6 +49,10 @@ public class Day3 {
 
     // test should be 467835
     public static int task2(ArrayList<String> input) {
+        input.forEach((line) -> {
+
+        });
+
         return 0;
     }
 }
