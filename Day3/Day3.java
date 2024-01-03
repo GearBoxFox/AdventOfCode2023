@@ -49,8 +49,24 @@ public class Day3 {
 
     // test should be 467835
     public static int task2(ArrayList<String> input) {
+        AtomicInteger inputIndex = new AtomicInteger();
         input.forEach((line) -> {
+                int index = 0;
+                boolean hasFirst = false, hasSecond = false;
+                int first = 0, second = 0;
+                while((index = line.indexOf('*', index)) != -1) {
+                    for (int i = -1; i < 2; i++) {
+                        String curLine = input.get(Math.min(Math.max(inputIndex.get() + i, 0), input.size() - 1));
+                        String sub = curLine.substring(Math.max(index - 1, 0), Math.min(index + 1, curLine.length() - 1));
 
+                        if (sub.chars().anyMatch(Character::isDigit) && !hasFirst && !hasSecond) {
+
+                        } else if (sub.chars().anyMatch(Character::isDigit) && hasFirst && !hasSecond) {
+
+                        }
+                    }
+                }
+                inputIndex.getAndIncrement();
         });
 
         return 0;
