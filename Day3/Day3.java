@@ -11,7 +11,8 @@ public class Day3 {
     public static void main(String[] args) {
         ArrayList<String> input = Util.getPuzzleInput("./Day3/input.txt");
 
-        System.out.println(task1(input));
+//        System.out.println(task1(input));
+        System.out.println(task2(input));
     }
 
     // test should be 4361, everything but 114 and 58
@@ -50,25 +51,68 @@ public class Day3 {
     // test should be 467835
     public static int task2(ArrayList<String> input) {
         AtomicInteger inputIndex = new AtomicInteger();
+        AtomicInteger sum = new AtomicInteger();
+        AtomicInteger lineIndex = new AtomicInteger();
         input.forEach((line) -> {
+            lineIndex.incrementAndGet();
                 int index = 0;
-                boolean hasFirst = false, hasSecond = false;
                 int first = 0, second = 0;
-                while((index = line.indexOf('*', index)) != -1) {
+
+                System.out.println("Current Line: " + lineIndex.get());
+
+                while((index = line.indexOf('*', index)) != -1) { // find all '*' per line
+
+                    System.out.println("'*' found at index " + index);
+
                     for (int i = -1; i < 2; i++) {
+                        // loop through 3x3 grid around each '*'
                         String curLine = input.get(Math.min(Math.max(inputIndex.get() + i, 0), input.size() - 1));
-                        String sub = curLine.substring(Math.max(index - 1, 0), Math.min(index + 1, curLine.length() - 1));
+                        int min = Math.min(index + 2, curLine.length() - 1);
+                        String sub = curLine.substring(Math.max(index - 1, 0), min);
 
-                        if (sub.chars().anyMatch(Character::isDigit) && !hasFirst && !hasSecond) {
+                        if (sub.chars().anyMatch(Character::isDigit)) {
+                            System.out.println("Found number");
+                            int finalNum = 0;
 
-                        } else if (sub.chars().anyMatch(Character::isDigit) && hasFirst && !hasSecond) {
+                            //find full number
 
+                            // find start
+                            int cIndex = min - 1;
+                            boolean lastWasDig = false;
+                            while (!lastWasDig && !Character.isDigit(curLine.charAt(cIndex)) || Character.isDigit(curLine.charAt(cIndex))) {
+                                if (cIndex == 0) break;
+                                lastWasDig = Character.isDigit(curLine.charAt(cIndex));
+                                cIndex--;
+                            }
+
+                            // redo some clamps on indexes
+                            cIndex = cIndex == 0 ? cIndex : cIndex + 1;
+                            cIndex = Math.min(cIndex, min - 1);
+
+
+                            while (Character.isDigit((curLine.charAt(cIndex)))) {
+                                char c = curLine.charAt(cIndex++);
+                                finalNum = (finalNum * 10) + Integer.parseInt(String.valueOf(c));
+                                if (cIndex == curLine.length()) break;
+                            }
+
+
+                            System.out.println("Final found number is: " + finalNum);
+
+                            if (first == 0) {
+                                first = finalNum;
+                            } else {
+                                second = finalNum;
+                            }
                         }
                     }
+
+                    sum.addAndGet(first * second);
+                    index++;
                 }
                 inputIndex.getAndIncrement();
         });
 
-        return 0;
+        return sum.get();
     }
 }
