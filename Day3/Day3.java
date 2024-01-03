@@ -56,13 +56,13 @@ public class Day3 {
         input.forEach((line) -> {
             lineIndex.incrementAndGet();
                 int index = 0;
-                int first = 0, second = 0;
 
-                System.out.println("Current Line: " + lineIndex.get());
+//                System.out.println("Current Line: " + lineIndex.get());
 
                 while((index = line.indexOf('*', index)) != -1) { // find all '*' per line
+                    int first = 0, second = 0;
 
-                    System.out.println("'*' found at index " + index);
+//                    System.out.println("'*' found at index " + index);
 
                     for (int i = -1; i < 2; i++) {
                         // loop through 3x3 grid around each '*'
@@ -70,44 +70,62 @@ public class Day3 {
                         int min = Math.min(index + 2, curLine.length() - 1);
                         String sub = curLine.substring(Math.max(index - 1, 0), min);
 
-                        if (sub.chars().anyMatch(Character::isDigit)) {
-                            System.out.println("Found number");
-                            int finalNum = 0;
+                        int lastNum = 0;
+                        for (int subIn = 0; subIn < 3; subIn++) {
+                            if (Character.isDigit(sub.charAt(subIn))) {
+//                            System.out.println("Found number");
+                                int finalNum = 0;
 
-                            //find full number
+                                //find full number
 
-                            // find start
-                            int cIndex = min - 1;
-                            boolean lastWasDig = false;
-                            while (!lastWasDig && !Character.isDigit(curLine.charAt(cIndex)) || Character.isDigit(curLine.charAt(cIndex))) {
-                                if (cIndex == 0) break;
-                                lastWasDig = Character.isDigit(curLine.charAt(cIndex));
-                                cIndex--;
-                            }
+                                // find start
+                                int cIndex = Math.max(index - 1, 0) + subIn;
+                                boolean lastWasDig = false;
+                                while (!lastWasDig && !Character.isDigit(curLine.charAt(cIndex)) || Character.isDigit(curLine.charAt(cIndex))) {
+                                    if (cIndex == 0) break;
+                                    lastWasDig = Character.isDigit(curLine.charAt(cIndex));
+                                    cIndex--;
+                                }
 
-                            // redo some clamps on indexes
-                            cIndex = cIndex == 0 ? cIndex : cIndex + 1;
-                            cIndex = Math.min(cIndex, min - 1);
-
-
-                            while (Character.isDigit((curLine.charAt(cIndex)))) {
-                                char c = curLine.charAt(cIndex++);
-                                finalNum = (finalNum * 10) + Integer.parseInt(String.valueOf(c));
-                                if (cIndex == curLine.length()) break;
-                            }
+                                // redo some clamps on indexes
+                                cIndex = cIndex == 0 ? cIndex : cIndex + 1;
+                                if (cIndex == 0 && lastWasDig && !Character.isDigit(curLine.charAt(cIndex))) cIndex++;
+                                cIndex = Math.min(cIndex, curLine.length() - 1);
 
 
-                            System.out.println("Final found number is: " + finalNum);
+                                while (Character.isDigit((curLine.charAt(cIndex)))) {
+                                    char c = curLine.charAt(cIndex++);
+                                    finalNum = (finalNum * 10) + Integer.parseInt(String.valueOf(c));
+                                    if (cIndex == curLine.length()) break;
+                                }
 
-                            if (first == 0) {
-                                first = finalNum;
-                            } else {
-                                second = finalNum;
+//                            System.out.println("Final found number is: " + finalNum);
+
+                                if (lastNum == finalNum) {
+                                    break;
+                                } if (first == 0) {
+                                    first = finalNum;
+                                } else if (second == 0) {
+                                    second = finalNum;
+//                                System.out.println("Found pair " + first + ", " + second + " at line " + lineIndex.get() + " index " + index + " ratio is " + first * second);
+                                } else if (finalNum != 0) {
+                                    System.out.println("Found more than two at line " + lineIndex.get() + " index " + index);
+                                }
+
+
+                                lastNum = finalNum;
                             }
                         }
                     }
 
-                    sum.addAndGet(first * second);
+                    if (first == 0) {
+                        System.out.println("Found '*' with no numbers at line " + lineIndex.get() + ", index " + index);
+                    } else if (second == 0) {
+                        System.out.println("Found '*' with only one value (" + first + ") at line " + lineIndex.get() + ", index " + index);
+                    } else {
+                        sum.addAndGet(first * second);
+                    }
+
                     index++;
                 }
                 inputIndex.getAndIncrement();
